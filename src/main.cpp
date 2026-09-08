@@ -146,7 +146,7 @@ private:
 
         sf::Vector2f position2 = bird.bird.getPosition();
 
-        if ((position2.y - INITIAL_BIRD_RAD) > WINDOW_HEIGHT || (position2.y + INITIAL_BIRD_RAD) < 0) {
+        if ((position2.y - INITIAL_BIRD_RAD * 2) > WINDOW_HEIGHT || (position2.y + INITIAL_BIRD_RAD * 2) < 0) {
                 bird.bird.setPosition(INITIAL_BIRD_POS);
                 // MUST FIX BIRD VELOCITY, GOES FTL
                 bird.velocityY = INITIAL_BIRD_VELOCITY_Y;
@@ -212,16 +212,21 @@ void handleInput(sf::Window& window, GameState& gameState, const ResourceManager
         // TODO: (Q2)
         //  implement jump logic (the key press should be space) and play jump sound fx
         // ====== ====== ======
-        /*
-        while (const std::optional event = window.pollEvent()) {
-            if (const auto *keyPressed = event->getIf<sf::Event::KeyPressed>()) {
-                // We know a key was pressed, lets check if it was the escape key!
-                if (keyPressed->scancode == sf::Keyboard::Scan::Space) {
-                    std::cout << "Space key was pressed" << std::endl;
+        
+
+        if (const auto *keyPressed = event->getIf<sf::Event::KeyPressed>()) {
+            // We know a key was pressed, lets check if it was the escape key!
+            if (keyPressed->scancode == sf::Keyboard::Scan::Space) {
+                gameState.bird.velocityY = JUMP_SPEED;
+                //std::cout << "Space key was pressed" << std::endl;
+
+                // Null Check
+                if (resources.jumpSound){
+                    resources.jumpSound->play();
                 }
+
             }
         }
-        */
 
     }
 }
