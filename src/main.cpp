@@ -133,12 +133,26 @@ private:
         //  - Note: bird's x-coordinate will alway be exactly 100.f
         // ====== ====== ======
 
+        sf::Vector2f position1 = bird.bird.getPosition();
+        position1.y += bird.velocityY;
+        bird.bird.setPosition(position1);
+
         // ====== ====== ======
         // TODO: (Q3)
         //  - Check if the bird has exceeded the bounds of the screen
         //    (i.e., if it's no longer visible). If not, game should reset by clearing
         //    the tubes and restarting the game (setting the bird back to original initial position)
         // ====== ====== ======
+
+        sf::Vector2f position2 = bird.bird.getPosition();
+
+        if ((position2.y - INITIAL_BIRD_RAD) > WINDOW_HEIGHT || (position2.y + INITIAL_BIRD_RAD) < 0) {
+                bird.bird.setPosition(INITIAL_BIRD_POS);
+                // MUST FIX BIRD VELOCITY, GOES FTL
+                bird.velocityY = INITIAL_BIRD_VELOCITY_Y;
+                resetTubes();
+        }
+
     }
 
     void updateTubes() {
