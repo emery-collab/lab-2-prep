@@ -27,6 +27,10 @@ const float TUBE_SPEED = 3.0f;
 // TODO: (Q1)
 //  Initial Bird Attributes
 //  Initialize the global (constant) variables for it here (radius, position, color)
+const sf::Vector2f INITIAL_BIRD_POS = {100.f, 400.f};
+const float INITIAL_BIRD_RAD = 15.0f;
+const sf::Color INITIAL_BIRD_COLOR = sf::Color::Yellow;
+
 
 // ResourceManager just owns all the resources/assets you'd want in your game.
 // In an engine, you'd probably want to make this more flexible than what we have here
@@ -67,19 +71,26 @@ struct TubePair {
 bool isTubeOffScreen(const TubePair& tube) { return tube.isOffScreen(); }
 
 struct BirdState {
-    BirdState() : velocityY{INITIAL_BIRD_VELOCITY_Y} {
+    BirdState() : velocityY{INITIAL_BIRD_VELOCITY_Y}, bird{INITIAL_BIRD_RAD} {
         // ====== ====== ======
         // TODO: (Q1)
         //  - initialize the bird's shape (see below) to have
         //    appropriate size, color, and initial position.
         //  Note: consider using member initializer list to set the radius via ctor call.
         // ====== ====== ======
+            
+            bird.setFillColor(INITIAL_BIRD_COLOR);
+            bird.setPosition(INITIAL_BIRD_POS);
+
     }
 
     // ====== ====== ======
     // TODO: (Q1)
     //  - add a field for the bird's shape.
     // ====== ====== ======
+
+    sf::CircleShape bird;
+
     float velocityY;
 };
 
@@ -187,6 +198,17 @@ void handleInput(sf::Window& window, GameState& gameState, const ResourceManager
         // TODO: (Q2)
         //  implement jump logic (the key press should be space) and play jump sound fx
         // ====== ====== ======
+        /*
+        while (const std::optional event = window.pollEvent()) {
+            if (const auto *keyPressed = event->getIf<sf::Event::KeyPressed>()) {
+                // We know a key was pressed, lets check if it was the escape key!
+                if (keyPressed->scancode == sf::Keyboard::Scan::Space) {
+                    std::cout << "Space key was pressed" << std::endl;
+                }
+            }
+        }
+        */
+
     }
 }
 
@@ -201,6 +223,9 @@ void render(sf::RenderWindow& window, const GameState& gameState) {
     // ====== ====== ======
     // TODO: (Q1) Draw bird
     // ====== ====== ======
+
+    window.draw(gameState.bird.bird);
+
     window.display();
 }
 
@@ -232,6 +257,15 @@ int main() {
         //            std::cout << "value is " << *intPtr << '\n';
         //            std::cout << "raw address is " << intPtr.get() << '\n';
         // ====== ====== ======
+        resources.jumpSoundBuffer.reset(new sf::SoundBuffer());
+
+        // loadFromFile will return true if it succeeds, false otherwise
+        if (!resources.jumpSoundBuffer->loadFromFile("assets/jump.wav")) { 
+            // failed to load sound file, handle here:
+            std::cerr << "Warning: Could not load jump.wav\n";
+        } else {
+            resources.jumpSound.reset(new sf::Sound(*resources.jumpSoundBuffer));
+        }
 
         bool shouldQuit = false;
         // Main game loop
