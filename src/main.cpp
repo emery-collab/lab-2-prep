@@ -184,6 +184,20 @@ private:
         //  with another
         // ====== ====== ======
 
+        // get bird AABB box for collisions
+        sf::FloatRect birdBox = bird.bird.getGlobalBounds();
+
+        //Go through every pipe 
+        for (const auto& tube : tubes) {
+            if (birdBox.findIntersection(tube.topTube.getGlobalBounds()) || birdBox.findIntersection(tube.bottomTube.getGlobalBounds())) {
+                bird.bird.setPosition(INITIAL_BIRD_POS);
+                // again, reset bird velocity, lest it go FTL
+                bird.velocityY = INITIAL_BIRD_VELOCITY_Y;
+                resetTubes();
+            }
+        }
+        
+
         // ====== ====== ======
         // TODO: (Q4)
         //  If bird hits tube, game should reset by resetting the tubes and resetting the bird
@@ -283,6 +297,7 @@ int main() {
             // failed to load sound file, handle here:
             std::cerr << "Warning: Could not load jump.wav\n";
         } else {
+            // construct the sound using loaded buffer
             resources.jumpSound.reset(new sf::Sound(*resources.jumpSoundBuffer));
         }
 
